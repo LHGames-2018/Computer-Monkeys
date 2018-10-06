@@ -102,7 +102,6 @@ export class Bot {
                     const vector = BotHelper.nextMove([this.playerInfo.Position.x, this.playerInfo.Position.y], this.currentResourcePoint);
                     // tslint:disable-next-line:max-line-length
                     if (map.getTileAt(new Point(this.playerInfo.Position.x + vector.x, this.playerInfo.Position.y + vector.y)) !== TileContent.Resource) {
-                        console.log("penis");
                         this.state = botStates.goHome;
                     }
                     // tslint:disable-next-line:max-line-length
