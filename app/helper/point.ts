@@ -18,4 +18,7 @@ export class Point {
     public static Equals(pt1: Point, pt2: Point): boolean {
         return pt1.x === pt2.x && pt1.y === pt2.y;
     }
+    public getAstarPoint(): number[] {
+        return [this.x, this.y];
+    }
 }
