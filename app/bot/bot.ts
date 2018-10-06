@@ -2,6 +2,8 @@ import { AIHelper } from '../helper/aiHelper';
 import { Player } from '../helper/interfaces';
 import { Map } from '../helper/map';
 import { Point } from '../helper/point';
+import { Astar } from './Astar';
+
 
 export class Bot {
     protected playerInfo: Player;
@@ -22,7 +24,19 @@ export class Bot {
      */
     public executeTurn(map: Map, visiblePlayers: Player[]): string {
         // Determine what action you want to take.
-        return AIHelper.createMoveAction(new Point(0, 1));
+        console.log(this.playerInfo.Position);
+
+        console.log(new Point(this.playerInfo.Position.x + 4, this.playerInfo.Position.y + 2));
+
+        const astar = new Astar(map,
+            this.playerInfo.Position,
+            new Point(this.playerInfo.Position.x + 4, this.playerInfo.Position.y + 2));
+        try {
+            const path = astar.getPath();
+        } catch (error) {
+            console.log(error);
+        }
+        return AIHelper.createMoveAction(new Point(-1, 0));
     }
 
     /**
