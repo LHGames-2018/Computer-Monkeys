@@ -26,10 +26,19 @@ export class Bot {
         // find assets position
         // const maperonni: Map<TileContent, Point> = BotHelper.getAssets(map, this.playerInfo);
         // Determine what action you want to take.
-        console.log(this.playerInfo.Position);
-        console.log(Astar.getPath(map, new Point(this.playerInfo.Position.x, this.playerInfo.Position.y), new Point(26, 60)));
+        // console.log(this.playerInfo.Position);
+        try {
 
-        return AIHelper.createMoveAction(new Point(-1, 0));
+            console.log(this.playerInfo.Position);
+
+            console.log(Astar.getPath(map, this.playerInfo.Position, new Point(23, 12)));
+
+            //  console.log(Astar.getPath(map, new Point(this.playerInfo.Position.x, this.playerInfo.Position.y), new Point(38, 14)).length);
+        } catch (error) {
+            console.log(error);
+        }
+
+        return AIHelper.createMoveAction(new Point(0, 0));
     }
 
     /**

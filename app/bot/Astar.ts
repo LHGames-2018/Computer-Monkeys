@@ -7,9 +7,12 @@ const aStar: any = require('a-star');
 export class Astar {
 
     public static getPath(gameMap: Map, startPoint: Point, endPoint: Point): any {
+        console.log("avant");
         const result: any = aStar({
             start: [startPoint.x, startPoint.y],
-            isEnd: (currentPoint: any) => { return currentPoint[0] === endPoint.x && currentPoint[1] === endPoint.y; },
+            isEnd: (currentPoint: any) => {
+                return currentPoint[0] === endPoint.x && currentPoint[1] === endPoint.y;
+            },
             neighbor: (xy: any) => {
                 const x = xy[0];
                 const y = xy[1];
@@ -26,10 +29,11 @@ export class Astar {
             distance: () => { return 1 },
             heuristic: (xy: any) => {
                 return Astar.diagonalDistance(xy, [endPoint.x, endPoint.y]);
-            }
-        })
+            },
+            timeout: 1000
+        });
 
-        console.log(result + "kjadkajfajhflahflh");
+        console.log(result.status + "   kjadkajfajhflahflh");
         if (result.status === 'success') {
             return result.path;
         } else {
