@@ -5,7 +5,7 @@ import { Point } from '../helper/point';
 
 export class BotHelper {
 
-    public static getAssets(map: GameMap, playerInfo: Player) {
+    public static getAssets(map: GameMap, playerInfo: Player): Map<TileContent, Point> {
         const assetToPosition: Map<TileContent, Point> = new Map();
 
         for (let i: number = -10; i <= 10; i++) {
@@ -24,6 +24,7 @@ export class BotHelper {
                 }
             }
         }
+        return assetToPosition;
     }
 
 }

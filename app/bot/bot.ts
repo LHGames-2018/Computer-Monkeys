@@ -2,6 +2,7 @@ import { AIHelper } from '../helper/aiHelper';
 import { Player, TileContent } from '../helper/interfaces';
 import { Map as GameMap } from '../helper/map';
 import { Point } from '../helper/point';
+import { BotHelper } from './botHelper';
 
 export class Bot {
     protected playerInfo: Player;
@@ -21,9 +22,8 @@ export class Bot {
      * @returns string The action to take(instanciate them with AIHelper)
      */
     public executeTurn(map: GameMap, visiblePlayers: Player[]): string {
-
         // find assets position
-
+        const maperonni: Map<TileContent, Point> = BotHelper.getAssets(map, this.playerInfo);
         // Determine what action you want to take.
 
         return AIHelper.createMoveAction(new Point(0, 1));
