@@ -34,6 +34,21 @@ export class BotHelper {
         return assetToPosition;
     }
 
+    public static getNearbyRessources(map: GameMap, playerInfo: Player): Point[] {
+        const ressources: Point[] = [];
+
+        for (let i: number = -10; i <= 10; i++) {
+            for (let j: number = -10; j <= 10; j++) {
+                const point: Point = new Point(playerInfo.Position.x + i, playerInfo.Position.y + j);
+                if (map.getTileAt(point) === TileContent.Resource) {
+                    ressources.push(point);
+                }
+            }
+        }
+
+        return ressources;
+    }
+
     public static nextMove(currentPosition: number[], nextPosition: number[]): Point {
         return new Point(nextPosition[0] - currentPosition[0], nextPosition[1] - currentPosition[1]);
     }
