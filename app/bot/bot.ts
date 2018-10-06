@@ -18,6 +18,7 @@ export class Bot {
     private currentResourcePoint = new Array<number>() 
     private state: botStates = botStates.goSteal;
     private moving: boolean = false;
+    private counter:number = 0;
 
     /**
      * Gets called before ExecuteTurn. This is where you get your bot's state.
@@ -110,8 +111,11 @@ export class Bot {
             } 
             this.moving = false;
         }*/
-        return AIHelper.createMoveAction(new Point(0,-1));
-        //            return AIHelper.createEmptyAction();
+        this.counter++;
+        if(this.counter < 8) {
+            return AIHelper.createMoveAction(new Point(0,-1));
+        }
+        return AIHelper.createEmptyAction();
     }
 
     /**
