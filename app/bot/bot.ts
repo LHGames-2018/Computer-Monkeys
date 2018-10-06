@@ -24,20 +24,11 @@ export class Bot {
      */
     public executeTurn(map: GameMap, visiblePlayers: Player[]): string {
         // find assets position
-        const maperonni: Map<TileContent, Point> = BotHelper.getAssets(map, this.playerInfo);
+        // const maperonni: Map<TileContent, Point> = BotHelper.getAssets(map, this.playerInfo);
         // Determine what action you want to take.
         console.log(this.playerInfo.Position);
+        console.log(Astar.getPath(map, new Point(this.playerInfo.Position.x, this.playerInfo.Position.y), new Point(26, 60)));
 
-        console.log(new Point(this.playerInfo.Position.x + 4, this.playerInfo.Position.y + 2));
-
-        const astar = new Astar(map,
-            this.playerInfo.Position,
-            new Point(this.playerInfo.Position.x + 4, this.playerInfo.Position.y + 2));
-        try {
-            const path = astar.getPath();
-        } catch (error) {
-            console.log(error);
-        }
         return AIHelper.createMoveAction(new Point(-1, 0));
     }
 
