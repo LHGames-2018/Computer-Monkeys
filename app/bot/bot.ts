@@ -35,7 +35,6 @@ export class Bot {
      * @returns string The action to take(instanciate them with AIHelper)
      */
     public executeTurn(map: GameMap, visiblePlayers: Player[]): string {
-        console.log(this.state);
         console.log(this.moving);
 
         try {
