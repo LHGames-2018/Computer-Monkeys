@@ -18,7 +18,7 @@ export class PathFinder {
                 }
             }
         }
-        console.log(matrix);
+
         return matrix;
     }
 
@@ -30,17 +30,13 @@ export class PathFinder {
         const localDestinationX = (destination.x - playerPos.x) + 10;
         const localDestinationY = (destination.y - playerPos.y) + 10;
 
-        console.log(localDestinationX);
-        console.log(localDestinationY);
-
         const path: any = finder.findPath(10, 10, localDestinationX, localDestinationY, grid);
-
         const globalPath: Point[] = [];
         path.forEach((pair: number[]) => {
             globalPath.push(this.localToGlobal(pair, playerPos));
         });
 
-        console.log(globalPath);
+        return globalPath;
     }
 
     private localToGlobal(localPoint: number[], playerPos: Point): Point {

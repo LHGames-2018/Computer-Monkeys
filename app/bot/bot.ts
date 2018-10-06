@@ -5,6 +5,7 @@ import { Point } from '../helper/point';
 import { PathFinder } from './pathfinding';
 import { BotHelper } from './botHelper';
 import { BotState } from './states/bot-State';
+import { GoToRessource } from './states/goToRessource';
 
 enum botStates {
     goMining,
@@ -20,7 +21,7 @@ export class Bot {
     private state: botStates = botStates.goHome;
     private moving: boolean = false;
 
-    private currentState: BotState;
+    private currentState: BotState = new GoToRessource();
 
     /**
      * Gets called before ExecuteTurn. This is where you get your bot's state.
@@ -37,11 +38,15 @@ export class Bot {
      * @returns string The action to take(instanciate them with AIHelper)
      */
     public executeTurn(map: GameMap, visiblePlayers: Player[]): string {
-        if (this.currentState.isOver()) {
-            this.currentState = this.currentState.getNextState({});
-        }
+        try {
+            if (this.currentState.isOver()) {
+                this.currentState = this.currentState.getNextState({});
+            }
+            return this.currentState.execute(map, this.playerInfo);
 
-        return this.currentState.execute(map, this.playerInfo);
+        } catch (err) {
+            console.log(err);
+        }
     }
 
     /**
