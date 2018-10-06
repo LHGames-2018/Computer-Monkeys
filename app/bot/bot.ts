@@ -14,8 +14,8 @@ enum botStates {
 export class Bot {
     protected playerInfo: Player;
 
-    private currentPath = new Array<Array<number>>();
-    private currentResourcePoint = new Array<number>();
+    private currentPath: Point[] = [];
+    private currentResourcePoint: Point;
     private state: botStates = botStates.goHome;
     private moving: boolean = false;
 
@@ -34,63 +34,36 @@ export class Bot {
      * @returns string The action to take(instanciate them with AIHelper)
      */
     public executeTurn(map: GameMap, visiblePlayers: Player[]): string {
-        // find assets position
-        // const maperonni: Map<TileContent, Point> = BotHelper.getAssets(map, this.playerInfo);
-        // Determine what action you want to take.
-        console.log(this.playerInfo.Position);
         const pathfinder: PathFinder = new PathFinder();
-        try {
-            pathfinder.findPath(map, this.playerInfo.Position, new Point(28, 40));
-
-        } catch (err) {
-            console.log(err);
-        }
-        console.log(this.state);
-        console.log(this.moving);
+        pathfinder.findPath(map, this.playerInfo.Position, new Point(28, 40));
 
         try {
             // find assets positionf
             if (this.currentPath.length === 0 && this.state !== botStates.mining && !this.moving) {
-                const maperonni: Map<TileContent, Point[]> = BotHelper.getAssets(map, this.playerInfo);
-                let content: TileContent;
-                let path: number[][];
-                if (this.state === botStates.goMining) {
-                    content = TileContent.Resource;
-                    maperonni.get(content).forEach(point => {
-                        try {
-                            // console.log(Astar.getPath(map, this.playerInfo.Position, point);
-                            path = Astar.getPath(map, this.playerInfo.Position, point);
-                            if (!path) {
-                                return;
-                            }
-                            console.log("------------>");
-                            console.log(path);
-                        } catch (error) {
-                            console.error(error);
-                        }
-                        // path = [[1, 1], [1, 2], [2, 2]];
+                const assetsPositions: Map<TileContent, Point[]> = BotHelper.getAssets(map, this.playerInfo);
 
-                        if (path.length < this.currentPath.length || this.currentPath.length === 0) {
+                let path: Point[];
+                if (this.state === botStates.goMining) {
+                    assetsPositions.get(TileContent.Resource).forEach((point: Point) => {
+                        path = pathfinder.findPath(map, this.playerInfo.Position, point);
+
+                        if (path.length < this.currentPath.length || path.length !== 0) {
                             this.currentPath = path;
                         }
                     });
+
                 } else {
-                    content = TileContent.House;
-                    path = Astar.getPath(map, this.playerInfo.Position, this.playerInfo.HouseLocation);
-                    path.push([this.playerInfo.HouseLocation.x, this.playerInfo.HouseLocation.y]);
-                    if (path.length < this.currentPath.length || this.currentPath.length === 0) {
+                    path = pathfinder.findPath(map, this.playerInfo.Position, new Point(this.playerInfo.HouseLocation.x - 1, this.playerInfo.HouseLocation.y));
+                    if (path.length < this.currentPath.length || path.length !== 0) {
                         this.currentPath = path;
                     }
                 }
-                console.log("path: ");
-                console.log(this.currentPath);
 
                 if (this.state === botStates.goMining) {
                     this.currentResourcePoint = this.currentPath.pop();
                 }
 
                 this.moving = true;
-
             }
 
             if (this.currentPath.length !== 0) {
