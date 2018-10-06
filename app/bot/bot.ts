@@ -53,7 +53,6 @@ export class Bot {
                             if (!path) {
                                 return;
                             }
-                            console.log("------------>");
                             console.log(path);
                         } catch (error) {
                             console.error(error);
