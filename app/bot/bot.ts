@@ -6,7 +6,9 @@ import { BotHelper } from './botHelper';
 
 enum botStates {
     goMining,
-    goHome
+    goHome,
+    goSteal,
+    goHomeFromSteal
 }
 
 export class Bot {
@@ -14,8 +16,9 @@ export class Bot {
 
     private currentPath = new Array<Array<number>>();
     private currentResourcePoint = new Array<number>() 
-    private state: botStates = botStates.goMining;
+    private state: botStates = botStates.goSteal;
     private moving: boolean = false;
+    private moved: boolean = false;
 
     /**
      * Gets called before ExecuteTurn. This is where you get your bot's state.
@@ -32,10 +35,45 @@ export class Bot {
      * @returns string The action to take(instanciate them with AIHelper)
      */
     public executeTurn(map: GameMap, visiblePlayers: Player[]): string {
-        
-        
-        // find assets positionf
-        if (this.currentPath.length === 0 && !this.moving) {
+        /*
+        if (this.state === botStates.goSteal) {
+            const point: Point = new Point(this.playerInfo.Position.x + 1, this.playerInfo.Position.y);
+            const right: Point = new Point (1, 0);
+            switch (map.getTileAt(point)) {
+                case TileContent.Wall:
+                    return AIHelper.createAttackAction(right);
+                case TileContent.Resource:
+                    return AIHelper.createCollectAction(right);
+                case TileContent.Empty:
+                    return AIHelper.createMoveAction(right);
+                case TileContent.Player:
+                    return AIHelper.createAttackAction(right);
+                case TileContent.House:
+                    this.state = botStates.goHomeFromSteal;
+                    return AIHelper.createStealAction(right);
+                default:
+                    return AIHelper.createEmptyAction();
+            }
+        } else if (this.state === botStates.goHomeFromSteal) {
+            const point: Point = new Point(this.playerInfo.Position.x - 1, this.playerInfo.Position.y);
+            const left: Point = new Point (-1, 0);
+            switch (map.getTileAt(point)) {
+                case TileContent.Wall:
+                    return AIHelper.createAttackAction(left);
+                case TileContent.Empty:
+                    return AIHelper.createMoveAction(left);
+                case TileContent.Resource:
+                    return AIHelper.createCollectAction(left);
+                case TileContent.Player:
+                    return AIHelper.createAttackAction(left);
+                case TileContent.House:
+                    this.state = botStates.goSteal;
+                    return AIHelper.createMoveAction(left);
+                default:
+                    return AIHelper.createEmptyAction(); 
+            }
+        }*//* else if (this.currentPath.length === 0 && !this.moving) {
+            // find assets positionf
             const maperonni: Map<TileContent, Point[]> = BotHelper.getAssets(map, this.playerInfo);
 
             let content: TileContent;
@@ -72,9 +110,12 @@ export class Bot {
                 this.state = botStates.goMining;
             } 
             this.moving = false;
+        }*/
+        if(!this.moved) {
+            this.moved =true;
+            return AIHelper.createMoveAction(new Point(0,1));
         }
-
-        return AIHelper.createEmptyAction();        
+        return AIHelper.createEmptyAction();
     }
 
     /**
