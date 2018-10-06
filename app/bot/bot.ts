@@ -2,7 +2,7 @@ import { AIHelper } from '../helper/aiHelper';
 import { Player, TileContent } from '../helper/interfaces';
 import { Map as GameMap } from '../helper/map';
 import { Point } from '../helper/point';
-import { Astar } from './Astar';
+import { PathFinder } from './pathfinding';
 import { BotHelper } from './botHelper';
 
 export class Bot {
@@ -27,7 +27,13 @@ export class Bot {
         // const maperonni: Map<TileContent, Point> = BotHelper.getAssets(map, this.playerInfo);
         // Determine what action you want to take.
         console.log(this.playerInfo.Position);
-        console.log(Astar.getPath(map, new Point(this.playerInfo.Position.x, this.playerInfo.Position.y), new Point(26, 60)));
+        const pathfinder: PathFinder = new PathFinder();
+        try {
+            pathfinder.findPath(map, this.playerInfo.Position, new Point(28, 40));
+
+        } catch (err) {
+            console.log(err);
+        }
 
         return AIHelper.createMoveAction(new Point(-1, 0));
     }
