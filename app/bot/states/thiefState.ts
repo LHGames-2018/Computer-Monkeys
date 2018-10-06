@@ -3,7 +3,7 @@ import { Map } from '../../helper/map';
 import { Player, TileContent } from '../../helper/interfaces';
 import { AIHelper } from '../../helper/aiHelper';
 import { Point } from '../../helper/point';
-import { HomeFromThiefState } from './homeFromoThiefState';
+import { HomeFromThiefState } from './homeFromThiefState';
 
 const down: Point = new Point (0, 1);
 

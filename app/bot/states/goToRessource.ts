@@ -9,7 +9,7 @@ import { MineRessource } from './mineRessource';
 
 export class GoToRessource implements BotState {
 
-    private _isOver: boolean = false;
+    private _isOver = false;
     private _path: Point[];
     private _ressourcePosition: Point;
 

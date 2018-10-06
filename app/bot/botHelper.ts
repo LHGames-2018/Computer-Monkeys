@@ -1,4 +1,3 @@
-import { AIHelper } from '../helper/aiHelper';
 import { Player, TileContent } from '../helper/interfaces';
 import { Map as GameMap } from '../helper/map';
 import { Point } from '../helper/point';
