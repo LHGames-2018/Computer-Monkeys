@@ -3,7 +3,7 @@ import { Map } from '../../helper/map';
 import { Player, TileContent } from '../../helper/interfaces';
 import { AIHelper } from '../../helper/aiHelper';
 import { Point } from '../../helper/point';
-import { ThiefState } from './thiefState';
+import { UpgradeState } from './upgradeState';
 
 const up: Point = new Point (0, -1);
 
@@ -34,6 +34,6 @@ export class HomeFromThiefState implements BotState {
     }
 
     public getNextState(options: {}): BotState {
-        return new ThiefState();
+        return new UpgradeState();
     }
 }
