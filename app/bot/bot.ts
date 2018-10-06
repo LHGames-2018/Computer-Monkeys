@@ -113,7 +113,7 @@ export class Bot {
         }*/
         if(!this.moved) {
             this.moved =true;
-            return AIHelper.createMoveAction(new Point(0,1));
+            return AIHelper.createMoveAction(new Point(0,-1));
         }
         return AIHelper.createEmptyAction();
     }
