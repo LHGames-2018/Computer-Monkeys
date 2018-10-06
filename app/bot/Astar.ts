@@ -9,28 +9,37 @@ export class Astar {
     public static getPath(gameMap: Map, startPoint: Point, endPoint: Point): any {
         const result: any = aStar({
             start: [startPoint.x, startPoint.y],
-            isEnd: (currentPoint: any) => { return currentPoint[0] === endPoint.x && currentPoint[1] === endPoint.y; },
+            isEnd: (currentPoint: any) => {
+                return (currentPoint[0] === endPoint.x && currentPoint[1] === endPoint.y ||
+                    currentPoint[0] === endPoint.x - 1 && currentPoint[1] === endPoint.y ||
+                    currentPoint[0] === endPoint.x && currentPoint[1] === endPoint.y - 1 ||
+                    currentPoint[0] === endPoint.x + 1 && currentPoint[1] === endPoint.y ||
+                    currentPoint[0] === endPoint.x && currentPoint[1] === endPoint.y + 1);
+            },
             neighbor: (xy: any) => {
                 const x = xy[0];
                 const y = xy[1];
-                const neighbors: number[][] = [
+                let neighbors: number[][] = [
                     [x - 1, y + 0],
                     [x + 0, y - 1],
                     [x + 0, y + 1],
                     [x + 1, y + 0],
                 ];
-                return neighbors.filter((pos) => {
+                neighbors = neighbors.filter((pos) => {
                     return (gameMap.getTileAt(new Point(pos[0], pos[1])) === TileContent.Empty);
                 });
+                return neighbors;
             },
             distance: () => { return 1 },
             heuristic: (xy: any) => {
                 return Astar.diagonalDistance(xy, [endPoint.x, endPoint.y]);
             }
-        })
+        });
 
-        console.log(result + "kjadkajfajhflahflh");
+        console.log(result.status + "   kjadkajfajhflahflh");
         if (result.status === 'success') {
+            result.path.push([endPoint.x, endPoint.y]);
+
             return result.path;
         } else {
             return undefined;
