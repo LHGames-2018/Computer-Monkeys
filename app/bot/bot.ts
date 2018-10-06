@@ -1,9 +1,9 @@
 import { AIHelper } from '../helper/aiHelper';
-import { Player } from '../helper/interfaces';
-import { Map } from '../helper/map';
+import { Player, TileContent } from '../helper/interfaces';
+import { Map as GameMap } from '../helper/map';
 import { Point } from '../helper/point';
 import { Astar } from './Astar';
-
+import { BotHelper } from './botHelper';
 
 export class Bot {
     protected playerInfo: Player;
@@ -22,7 +22,9 @@ export class Bot {
      * @param  {Player[]} visiblePlayers The list of visible players.
      * @returns string The action to take(instanciate them with AIHelper)
      */
-    public executeTurn(map: Map, visiblePlayers: Player[]): string {
+    public executeTurn(map: GameMap, visiblePlayers: Player[]): string {
+        // find assets position
+        const maperonni: Map<TileContent, Point> = BotHelper.getAssets(map, this.playerInfo);
         // Determine what action you want to take.
         console.log(this.playerInfo.Position);
 
