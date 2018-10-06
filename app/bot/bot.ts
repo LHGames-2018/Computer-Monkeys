@@ -1,6 +1,6 @@
 import { AIHelper } from '../helper/aiHelper';
-import { Player } from '../helper/interfaces';
-import { Map } from '../helper/map';
+import { Player, TileContent } from '../helper/interfaces';
+import { Map as GameMap } from '../helper/map';
 import { Point } from '../helper/point';
 
 export class Bot {
@@ -20,8 +20,12 @@ export class Bot {
      * @param  {Player[]} visiblePlayers The list of visible players.
      * @returns string The action to take(instanciate them with AIHelper)
      */
-    public executeTurn(map: Map, visiblePlayers: Player[]): string {
+    public executeTurn(map: GameMap, visiblePlayers: Player[]): string {
+
+        // find assets position
+
         // Determine what action you want to take.
+
         return AIHelper.createMoveAction(new Point(0, 1));
     }
 
