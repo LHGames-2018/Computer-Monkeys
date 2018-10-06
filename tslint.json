@@ -1,5 +1,5 @@
 {
-  "rulesDirectory":[
+  "rulesDirectory": [
     "node_modules/tslint-eslint-rules/dist/rules"
   ],
   "rules": {
@@ -80,8 +80,14 @@
       "check-else",
       "check-whitespace"
     ],
-    "cyclomatic-complexity": [ true, 20],
-    "max-classes-per-file": [true, 2],
+    "cyclomatic-complexity": [
+      true,
+      20
+    ],
+    "max-classes-per-file": [
+      true,
+      2
+    ],
     "no-unsafe-finally": true,
     "prefer-const": true,
     "quotemark": [
@@ -118,7 +124,6 @@
       "check-separator",
       "check-type"
     ],
-    
     // rules added by Dylan
     "no-sparse-arrays": true,
     "no-irregular-whitespace": true

@@ -2,23 +2,23 @@ import { AIHelper } from '../helper/aiHelper';
 import { Player, TileContent } from '../helper/interfaces';
 import { Map as GameMap } from '../helper/map';
 import { Point } from '../helper/point';
+import { Astar } from './Astar';
 import { BotHelper } from './botHelper';
 
 enum botStates {
     goMining,
-    goHome,
-    goSteal,
-    goHomeFromSteal
+    mining,
+    goHome
 }
 
 export class Bot {
     protected playerInfo: Player;
 
     private currentPath = new Array<Array<number>>();
-    private currentResourcePoint = new Array<number>() 
-    private state: botStates = botStates.goSteal;
+    private currentResourcePoint = new Array<number>();
+    private state: botStates = botStates.goHome;
     private moving: boolean = false;
-    private counter:number = 0;
+    private counter: number = 0;
 
     /**
      * Gets called before ExecuteTurn. This is where you get your bot's state.
@@ -35,87 +35,90 @@ export class Bot {
      * @returns string The action to take(instanciate them with AIHelper)
      */
     public executeTurn(map: GameMap, visiblePlayers: Player[]): string {
-        /*
-        if (this.state === botStates.goSteal) {
-            const point: Point = new Point(this.playerInfo.Position.x + 1, this.playerInfo.Position.y);
-            const right: Point = new Point (1, 0);
-            switch (map.getTileAt(point)) {
-                case TileContent.Wall:
-                    return AIHelper.createAttackAction(right);
-                case TileContent.Resource:
-                    return AIHelper.createCollectAction(right);
-                case TileContent.Empty:
-                    return AIHelper.createMoveAction(right);
-                case TileContent.Player:
-                    return AIHelper.createAttackAction(right);
-                case TileContent.House:
-                    this.state = botStates.goHomeFromSteal;
-                    return AIHelper.createStealAction(right);
-                default:
-                    return AIHelper.createEmptyAction();
-            }
-        } else if (this.state === botStates.goHomeFromSteal) {
-            const point: Point = new Point(this.playerInfo.Position.x - 1, this.playerInfo.Position.y);
-            const left: Point = new Point (-1, 0);
-            switch (map.getTileAt(point)) {
-                case TileContent.Wall:
-                    return AIHelper.createAttackAction(left);
-                case TileContent.Empty:
-                    return AIHelper.createMoveAction(left);
-                case TileContent.Resource:
-                    return AIHelper.createCollectAction(left);
-                case TileContent.Player:
-                    return AIHelper.createAttackAction(left);
-                case TileContent.House:
-                    this.state = botStates.goSteal;
-                    return AIHelper.createMoveAction(left);
-                default:
-                    return AIHelper.createEmptyAction(); 
-            }
-        }*//* else if (this.currentPath.length === 0 && !this.moving) {
+        console.log(this.state);
+        console.log(this.moving);
+
+        try {
             // find assets positionf
-            const maperonni: Map<TileContent, Point[]> = BotHelper.getAssets(map, this.playerInfo);
+            if (this.currentPath.length === 0 && this.state !== botStates.mining && !this.moving) {
+                const maperonni: Map<TileContent, Point[]> = BotHelper.getAssets(map, this.playerInfo);
+                let content: TileContent;
+                let path: number[][];
+                if (this.state === botStates.goMining) {
+                    content = TileContent.Resource;
+                    maperonni.get(content).forEach(point => {
+                        try {
+                            // console.log(Astar.getPath(map, this.playerInfo.Position, point);
+                            path = Astar.getPath(map, this.playerInfo.Position, point);
+                            if (!path) {
+                                return;
+                            }
+                            console.log("------------>");
+                            console.log(path);
+                        } catch (error) {
+                            console.error(error);
+                        }
+                        // path = [[1, 1], [1, 2], [2, 2]];
 
-            let content: TileContent;
-            if (this.state === botStates.goMining) {
-                content = TileContent.Resource;
-            } 
-            else {
-                content = TileContent.House;
+                        if (path.length < this.currentPath.length || this.currentPath.length === 0) {
+                            this.currentPath = path;
+                        }
+                    });
+                } else {
+                    content = TileContent.House;
+                    path = Astar.getPath(map, this.playerInfo.Position, this.playerInfo.HouseLocation);
+                    path.push([this.playerInfo.HouseLocation.x, this.playerInfo.HouseLocation.y]);
+                    if (path.length < this.currentPath.length || this.currentPath.length === 0) {
+                        this.currentPath = path;
+                    }
+                }
+                console.log("path: ");
+                console.log(this.currentPath);
+
+                if (this.state === botStates.goMining) {
+                    this.currentResourcePoint = this.currentPath.pop();
+                }
+
+                this.moving = true;
+
             }
 
-            maperonni.get(content).forEach(point => {
-                const path = [[1,1], [1,2], [2,2]];
-                if (path.length < this.currentPath.length) {
-                    this.currentPath = path;
+            if (this.currentPath.length !== 0) {
+                if (this.currentPath.length === 1) {
+                    const currentPosition: number[] = this.currentPath.shift();
+                    return AIHelper.createEmptyAction();
+                } else {
+                    const currentPosition: number[] = this.currentPath.shift();
+                    console.log(this.currentPath);
+                    return AIHelper.createMoveAction(BotHelper.nextMove(currentPosition, this.currentPath[0]));
                 }
-            });
 
-            if (this.state === botStates.goMining) {
-                this.currentResourcePoint = this.currentPath.pop();
-            } 
-            
-            this.moving = true;
+            } else {
+                if (this.state === botStates.goMining) {
+                    this.state = botStates.mining;
+                    this.moving = false;                    // tslint:disable-next-line:max-line-length
+                    return AIHelper.createCollectAction(BotHelper.nextMove([this.playerInfo.Position.x, this.playerInfo.Position.y], this.currentResourcePoint));
+                } else if (this.state === botStates.mining) {
+                    // tslint:disable-next-line:max-line-length
+                    const vector = BotHelper.nextMove([this.playerInfo.Position.x, this.playerInfo.Position.y], this.currentResourcePoint);
+                    // tslint:disable-next-line:max-line-length
+                    if (map.getTileAt(new Point(this.playerInfo.Position.x + vector.x, this.playerInfo.Position.y + vector.y)) !== TileContent.Resource) {
+                        console.log("penis");
+                        this.state = botStates.goHome;
+                    }
+                    // tslint:disable-next-line:max-line-length
+                    return AIHelper.createCollectAction(vector);
 
+                } else if (this.state === botStates.goHome) {
+                    this.state = botStates.goMining;
+                }
+                this.moving = false;
+            }
+
+            return AIHelper.createEmptyAction();
+        } catch (error) {
+            console.error(error);
         }
-
-        if (this.currentPath.length !== 0) {
-            const currentPosition: number[] = this.currentPath.shift();
-            return AIHelper.createMoveAction( BotHelper.nextMove(currentPosition, this.currentPath[0]));
-        } else {
-            if (this.state === botStates.goMining) {
-                this.state = botStates.goHome;
-                return AIHelper.createCollectAction(BotHelper.nextMove([this.playerInfo.Position.x, this.playerInfo.Position.y], this.currentResourcePoint));
-            } else if (this.state === botStates.goHome) {
-                this.state = botStates.goMining;
-            } 
-            this.moving = false;
-        }*/
-        this.counter++;
-        if(this.counter < 8) {
-            return AIHelper.createMoveAction(new Point(0,-1));
-        }
-        return AIHelper.createEmptyAction();
     }
 
     /**
