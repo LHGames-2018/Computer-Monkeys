@@ -32,7 +32,7 @@ export class ThiefState implements BotState {
     }
 
     public isOver(): boolean {
-        return this.carriedResources >= this.capacity;
+        return this.carriedResources === this.capacity;
     }
 
     public getNextState(options: {}): BotState {
