@@ -8,11 +8,9 @@ import { HomeFromThiefState } from './homeFromThiefState';
 const down: Point = new Point (0, 1);
 
 export class ThiefState implements BotState {
-    private carriedResources = 0;
-    private capacity = 10000;
+    private counter = 0;
 
     public execute(map: Map, playerInfo: Player): string {
-        this.capacity = playerInfo.CarryingCapacity;
         const point: Point = new Point(playerInfo.Position.x, playerInfo.Position.y + 1);
         switch (map.getTileAt(point)) {
             case TileContent.Wall:
@@ -24,7 +22,7 @@ export class ThiefState implements BotState {
             case TileContent.Player:
                 return AIHelper.createAttackAction(down);
             case TileContent.House:
-                this.carriedResources = playerInfo.CarriedResources;
+                this.counter++;
                 return AIHelper.createStealAction(down);
             default:
                 return AIHelper.createEmptyAction();
@@ -32,7 +30,10 @@ export class ThiefState implements BotState {
     }
 
     public isOver(): boolean {
-        return this.carriedResources === this.capacity;
+        if (this.counter === 5) {
+            return true;
+        }
+        return false;
     }
 
     public getNextState(options: {}): BotState {
